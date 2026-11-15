@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#697b9b"/><stop offset=".68" stop-color="#f3a47e"/><stop offset="1" stop-color="#efc18a"/></linearGradient><linearGradient id="room" x2="0" y2="1"><stop stop-color="#38435b"/><stop offset="1" stop-color="#141b2b"/></linearGradient></defs>
+<rect width="1600" height="900" fill="url(#room)"/><rect x="250" y="80" width="1100" height="500" fill="url(#sky)"/><circle cx="1110" cy="300" r="92" fill="#ffe9bd" opacity=".85"/>
+<g fill="#4b5974" opacity=".8"><path d="M250 430 450 280 590 400 760 250 980 430v150H250z"/><path d="M790 390 970 270l170 150 110-90 100 110v140H790z"/></g>
+<g stroke="#283148" stroke-width="24"><path d="M250 80v500M800 80v500M1350 80v500M250 330h1100"/></g>
+<path d="M0 640h1600v260H0z" fill="#171c2a"/><g fill="#282a36"><path d="M100 655h650v95H100zM850 665h600v90H850z"/><path d="M145 750h24v150h-24zM680 750h24v150h-24zM900 755h24v145h-24zM1390 755h24v145h-24z"/></g>
+<g fill="#fff0ce" opacity=".15"><circle cx="150" cy="180" r="4"/><circle cx="300" cy="300" r="3"/><circle cx="1400" cy="130" r="4"/><circle cx="1320" cy="520" r="3"/><circle cx="90" cy="500" r="4"/></g>
+</svg>

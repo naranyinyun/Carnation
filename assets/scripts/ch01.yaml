@@ -1,0 +1,67 @@
+scenes:
+  - id: ch01.classroom
+    backgrounds: [classroom_dusk]
+    initial: classroom_dusk
+    bgm: after_school
+    enter: fade
+    start: true
+    dialog:
+      d001:
+        narrator:
+          say: "蝉鸣忽然停了。放学后的教室空得能听见自己的呼吸。"
+          stage: {background: classroom_dusk}
+      d002:
+        zhou:
+          sprite: laugh
+          at: {x: 0.78, y: 1.0}
+          animation: [{enter: {from: right}}]
+          say: "喂，你还没走啊？"
+      d003:
+        lin:
+          sprite: neutral
+          at: {x: 0.22, y: 1.0}
+          animation: [{enter: {from: left}}]
+          say: "……你没走，我怎么走。"
+      d004:
+        zhou:
+          say: "这话说得我可太爱听了。"
+      d005:
+        narrator:
+          say: "窗外最后一点光落在桌沿。"
+          stage: {cg: after_rain}
+      d006:
+        lin:
+          sprite: neutral
+          say: "明天还会见面吧？"
+        options:
+          - {id: promise, say: "当然。明天见。", to: ch01.gate_promise}
+          - {id: hesitate, say: "……我不知道。", to: ch01.gate_quiet}
+
+  - id: ch01.gate_promise
+    backgrounds: [rooftop_night]
+    initial: rooftop_night
+    bgm: after_school
+    enter: crossfade
+    dialog:
+      d001:
+        zhou:
+          sprite: laugh
+          at: {x: 0.72, y: 1.0}
+          say: "那就说定了。"
+      d002:
+        lin:
+          sprite: neutral
+          at: {x: 0.28, y: 1.0}
+          say: "嗯。明天见。"
+    end: true
+
+  - id: ch01.gate_quiet
+    backgrounds: [rooftop_night]
+    initial: rooftop_night
+    bgm: null
+    enter: fade
+    dialog:
+      d001:
+        narrator:
+          say: "雨声填满了沉默。我们并肩走进夜色里。"
+    end: true

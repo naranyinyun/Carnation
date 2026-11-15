@@ -1,0 +1,13 @@
+background:
+  classroom_dusk: assets/backgrounds/classroom_dusk.svg
+  rooftop_night: assets/backgrounds/rooftop_night.svg
+sprite:
+  lin:
+    neutral: assets/characters/lin_neutral.svg
+  zhou:
+    laugh: assets/characters/zhou_laugh.svg
+cg:
+  after_rain: assets/cg/after_rain.svg
+bgm:
+  after_school: audio/bgm/after_school.ogg # placeholder: add audio file before enabling playback
+voice: {}
