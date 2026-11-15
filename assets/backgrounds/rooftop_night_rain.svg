@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="nightRain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1021"/>
+      <stop offset="0.6" stop-color="#1b2642"/>
+      <stop offset="1" stop-color="#353f5e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#nightRain)"/>
+  <path d="M0 590 270 480l180 90 240-150 220 130 250-180 230 150 210-110v490H0z" fill="#151b2e"/>
+  <path d="M0 680h1600v220H0z" fill="#0c101c"/>
+  <ellipse cx="800" cy="790" rx="520" ry="45" fill="#293859" opacity="0.35"/>
+  <path d="M170 570v330M1430 540v360M100 570h1400" stroke="#060912" stroke-width="28"/>
+  <path d="M250 650h1100" stroke="#6f82a8" stroke-width="4" opacity="0.45"/>
+  <g stroke="#9cb8e8" stroke-width="2" opacity="0.42">
+    <path d="M180 80l-45 160M340 140l-45 160M520 60l-45 160M710 130l-45 160M890 90l-45 160M1080 150l-45 160M1260 70l-45 160M1440 130l-45 160"/>
+    <path d="M140 310l-45 160M310 370l-45 160M480 290l-45 160M670 360l-45 160M850 320l-45 160M1040 380l-45 160M1220 300l-45 160M1390 360l-45 160"/>
+    <path d="M220 520l-45 160M410 560l-45 160M610 510l-45 160M790 550l-45 160M980 520l-45 160M1170 560l-45 160M1350 510l-45 160"/>
+  </g>
+</svg>

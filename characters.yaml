@@ -1,9 +1,9 @@
 characters:
   lin:
     name: 林
-    color: "#93b6f2"
+    color: "#7bb0ff"
     default_sprite: neutral
   zhou:
     name: 周
-    color: "#e9a77f"
-    default_sprite: laugh
+    color: "#ffb86c"
+    default_sprite: neutral

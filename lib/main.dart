@@ -6,12 +6,18 @@ import 'script/script_parser.dart';
 import 'ui/motion.dart';
 import 'ui/player_screen.dart';
 
-void main() {
-  runApp(const CarnationApp());
+void main(List<String> args) {
+  const envDebug =
+      bool.fromEnvironment('DEBUG') || bool.fromEnvironment('CARNATION_DEBUG');
+  final debugMode =
+      envDebug || args.contains('--debug') || args.contains('-d');
+  runApp(CarnationApp(initialDebugMode: debugMode));
 }
 
 class CarnationApp extends StatelessWidget {
-  const CarnationApp({super.key});
+  const CarnationApp({super.key, this.initialDebugMode = false});
+
+  final bool initialDebugMode;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +34,15 @@ class CarnationApp extends StatelessWidget {
         ),
         fontFamily: 'serif',
       ),
-      home: const _ScriptLoader(),
+      home: _ScriptLoader(initialDebugMode: initialDebugMode),
     );
   }
 }
 
 class _ScriptLoader extends StatefulWidget {
-  const _ScriptLoader();
+  const _ScriptLoader({required this.initialDebugMode});
+
+  final bool initialDebugMode;
 
   @override
   State<_ScriptLoader> createState() => _ScriptLoaderState();
@@ -80,6 +88,7 @@ class _ScriptLoaderState extends State<_ScriptLoader> {
           child = PlayerScreen(
             key: const ValueKey('player'),
             player: snapshot.requireData,
+            initialDebugMode: widget.initialDebugMode,
           );
         }
 

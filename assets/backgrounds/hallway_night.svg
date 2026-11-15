@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="hallWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141824"/>
+      <stop offset="1" stop-color="#0b0e17"/>
+    </linearGradient>
+    <radialGradient id="lampGlow" cx="0.5" cy="0.12" r="0.65">
+      <stop offset="0" stop-color="#ffe4a8" stop-opacity="0.45"/>
+      <stop offset="0.45" stop-color="#f3b664" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#0b0e17" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#hallWall)"/>
+  <polygon points="0,0 1600,0 1150,240 450,240" fill="#101420"/>
+  <polygon points="450,240 1150,240 1150,650 450,650" fill="#171c2b"/>
+  <polygon points="0,900 1600,900 1150,650 450,650" fill="#0f131f"/>
+  <g stroke="#252c40" stroke-width="4" fill="none">
+    <line x1="0" y1="0" x2="450" y2="240"/>
+    <line x1="1600" y1="0" x2="1150" y2="240"/>
+    <line x1="0" y1="900" x2="450" y2="650"/>
+    <line x1="1600" y1="900" x2="1150" y2="650"/>
+    <rect x="450" y="240" width="700" height="410"/>
+  </g>
+  <g fill="#1c2438" stroke="#2c3652" stroke-width="3">
+    <polygon points="110,160 340,240 340,690 110,820"/>
+    <polygon points="1260,240 1490,160 1490,820 1260,690"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#lampGlow)"/>
+  <ellipse cx="800" cy="105" rx="70" ry="16" fill="#fff3d1"/>
+  <ellipse cx="800" cy="760" rx="280" ry="42" fill="#f5c982" opacity="0.12"/>
+</svg>

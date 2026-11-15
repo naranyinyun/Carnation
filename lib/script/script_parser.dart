@@ -6,7 +6,7 @@ abstract interface class ScriptParser {
   NovelScript parse(String source);
 }
 
-/// Parses the scene and dialogue subset needed by the first player MVP.
+/// Parses the scene and dialogue specification from YAML into immutable models.
 /// Maps are traversed in source order so dialogue keeps its authored order.
 class YamlScriptParser implements ScriptParser {
   @override
@@ -82,6 +82,8 @@ class YamlScriptParser implements ScriptParser {
       lines: List.unmodifiable(lines),
       isEnd: _optionalBool(scene['end'], false, 'scene.end'),
       isStart: _optionalBool(scene['start'], false, 'scene.start'),
+      bgm: _optionalString(scene['bgm'], 'scene.bgm'),
+      enterTransition: _transition(scene['enter'], 'scene.enter'),
     );
   }
 
@@ -96,21 +98,105 @@ class YamlScriptParser implements ScriptParser {
     final speaker = _map(row[speakerId], '$sceneId/$lineId.$speakerId');
     _onlyKeys(speaker, {'say', 'voice', 'sprite', 'at', 'stage', 'animation', 'pause'}, 'speaker line');
 
-    final stage = speaker.containsKey('stage') ? _map(speaker['stage'], 'stage') : const <String, Object?>{};
-    _onlyKeys(stage, {'background', 'cg', 'bgm', 'transition'}, 'stage');
-    final backgrounds = _map(row, '$sceneId/$lineId');
-    final options = _options(backgrounds['options'], '$sceneId/$lineId');
+    final stageMap = speaker.containsKey('stage') ? _map(speaker['stage'], 'stage') : const <String, Object?>{};
+    _onlyKeys(stageMap, {'background', 'cg', 'bgm', 'transition'}, 'stage');
+
+    final backgroundId = _optionalString(stageMap['background'], 'stage.background');
+    final stage = StageChange(
+      backgroundId: backgroundId,
+      hasCgChange: stageMap.containsKey('cg'),
+      cgId: _optionalString(stageMap['cg'], 'stage.cg'),
+      hasBgmChange: stageMap.containsKey('bgm'),
+      bgmId: _optionalString(stageMap['bgm'], 'stage.bgm'),
+      transition: _transition(stageMap['transition'], 'stage.transition'),
+    );
+
+    final animations = _animations(speaker['animation'], '$sceneId/$lineId.animation');
+    final options = _options(row['options'], '$sceneId/$lineId');
 
     return ScriptLine(
       id: lineId,
       speakerId: speakerId,
       text: _string(speaker['say'], '$sceneId/$lineId.say'),
       spriteId: _optionalString(speaker['sprite'], 'sprite'),
-      backgroundId: _optionalString(stage['background'], 'stage.background'),
+      backgroundId: backgroundId,
       voiceId: _optionalString(speaker['voice'], 'voice'),
       position: speaker.containsKey('at') ? _position(speaker['at']) : null,
+      pause: speaker.containsKey('pause') ? _number(speaker['pause'], 'pause') : null,
+      stage: stage,
+      animations: List.unmodifiable(animations),
       options: List.unmodifiable(options),
     );
+  }
+
+  List<CharacterAnimation> _animations(Object? value, String context) {
+    if (value == null) return const [];
+    if (value is! List) throw FormatException('$context must be a list');
+    final result = <CharacterAnimation>[];
+    for (var i = 0; i < value.length; i++) {
+      final item = _map(value[i], '$context[$i]');
+      if (item.length != 1) {
+        throw FormatException('$context[$i] must declare exactly one animation verb');
+      }
+      final verbName = item.keys.single;
+      final params = _map(item[verbName], '$context[$i].$verbName');
+      final style = _animationStyle(params['style'], '$context[$i].$verbName.style');
+
+      switch (verbName) {
+        case 'enter':
+          _onlyKeys(params, {'from', 'style'}, 'enter');
+          result.add(CharacterAnimation(
+            verb: AnimationVerb.enter,
+            direction: _optionalString(params['from'], 'enter.from') ?? 'front',
+            style: style,
+          ));
+        case 'exit':
+          _onlyKeys(params, {'to', 'style'}, 'exit');
+          result.add(CharacterAnimation(
+            verb: AnimationVerb.exit,
+            direction: _optionalString(params['to'], 'exit.to') ?? 'back',
+            style: style,
+          ));
+        case 'move':
+          _onlyKeys(params, {'to', 'style'}, 'move');
+          result.add(CharacterAnimation(
+            verb: AnimationVerb.move,
+            target: params.containsKey('to') ? _position(params['to']) : null,
+            style: style,
+          ));
+        case 'nod':
+          _onlyKeys(params, {'style'}, 'nod');
+          result.add(CharacterAnimation(verb: AnimationVerb.nod, style: style));
+        case 'shake':
+          _onlyKeys(params, {'style'}, 'shake');
+          result.add(CharacterAnimation(verb: AnimationVerb.shake, style: style));
+        case 'jump':
+          _onlyKeys(params, {'style'}, 'jump');
+          result.add(CharacterAnimation(verb: AnimationVerb.jump, style: style));
+        default:
+          throw FormatException('Unknown animation verb "$verbName"');
+      }
+    }
+    return result;
+  }
+
+  TransitionKind _transition(Object? value, String context) {
+    if (value == null) return TransitionKind.cut;
+    return switch (_string(value, context)) {
+      'cut' => TransitionKind.cut,
+      'fade' => TransitionKind.fade,
+      'crossfade' => TransitionKind.crossfade,
+      final other => throw FormatException('Unknown $context transition "$other"'),
+    };
+  }
+
+  ScriptAnimationStyle _animationStyle(Object? value, String context) {
+    if (value == null) return ScriptAnimationStyle.normal;
+    return switch (_string(value, context)) {
+      'fast' => ScriptAnimationStyle.fast,
+      'slow' => ScriptAnimationStyle.slow,
+      final other => throw FormatException('Unknown $context style "$other"'),
+    };
   }
 
   List<ScriptOption> _options(Object? value, String context) {

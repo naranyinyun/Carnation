@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="skyNoon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a90d9"/>
+      <stop offset="0.65" stop-color="#87c5f5"/>
+      <stop offset="1" stop-color="#d4ecff"/>
+    </linearGradient>
+    <linearGradient id="wallNoon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4e5869"/>
+      <stop offset="1" stop-color="#2c3340"/>
+    </linearGradient>
+    <linearGradient id="floorNoon" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d322c"/>
+      <stop offset="1" stop-color="#241d19"/>
+    </linearGradient>
+    <linearGradient id="sunbeam" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffbe6" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#fffbe6" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#wallNoon)"/>
+  <rect x="180" y="70" width="1240" height="510" fill="url(#skyNoon)"/>
+  <g fill="#ffffff" opacity="0.88">
+    <ellipse cx="480" cy="240" rx="140" ry="48"/>
+    <ellipse cx="560" cy="220" rx="110" ry="56"/>
+    <ellipse cx="1050" cy="190" rx="160" ry="52"/>
+    <ellipse cx="1160" cy="175" rx="120" ry="44"/>
+  </g>
+  <g fill="#5c7a67" opacity="0.85">
+    <path d="M180 580 L180 430 Q320 350 460 440 Q620 330 820 450 Q1040 340 1220 430 Q1340 380 1420 430 L1420 580 Z"/>
+  </g>
+  <g stroke="#2a313d" stroke-width="22" fill="none">
+    <rect x="180" y="70" width="1240" height="510"/>
+    <path d="M593 70v510 M1006 70v510 M180 340h1240"/>
+  </g>
+  <path d="M0 620h1600v280H0z" fill="url(#floorNoon)"/>
+  <path d="M0 620h1600" stroke="#1e232d" stroke-width="10"/>
+  <polygon points="220,70 580,70 950,900 420,900" fill="url(#sunbeam)"/>
+  <polygon points="620,70 980,70 1380,900 840,900" fill="url(#sunbeam)"/>
+  <g fill="#4a3b32" stroke="#261d18" stroke-width="3">
+    <rect x="140" y="650" width="520" height="82" rx="4"/>
+    <rect x="820" y="650" width="540" height="82" rx="4"/>
+    <rect x="190" y="732" width="22" height="168"/>
+    <rect x="590" y="732" width="22" height="168"/>
+    <rect x="870" y="732" width="22" height="168"/>
+    <rect x="1290" y="732" width="22" height="168"/>
+  </g>
+  <g fill="#fff9d6" opacity="0.35">
+    <circle cx="420" cy="310" r="3.5"/>
+    <circle cx="540" cy="460" r="2.5"/>
+    <circle cx="880" cy="390" r="3"/>
+    <circle cx="1020" cy="520" r="4"/>
+    <circle cx="710" cy="270" r="2.5"/>
+  </g>
+</svg>
