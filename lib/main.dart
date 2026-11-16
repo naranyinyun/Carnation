@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -93,8 +91,7 @@ class _ScriptLoaderState extends State<_ScriptLoader> {
       },
     );
 
-    final saveFile = File('${Directory.systemTemp.path}/carnation_saves_v1.json');
-    final saveRepo = JsonFileSaveRepository(saveFile);
+    final saveRepo = createDefaultSaveRepository();
 
     final player = ScriptPlayer(
       script,
