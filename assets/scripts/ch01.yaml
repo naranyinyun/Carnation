@@ -1,269 +1,174 @@
 scenes:
-  # ─────────────── 场景一：放学后的教室 ───────────────
-  - id: ch01.classroom
-    backgrounds: [classroom_noon, classroom_dusk, classroom_dusk_rain]
-    initial: classroom_noon
-    bgm: after_school
+  - id: stranger_ceiling.awakening
+    backgrounds: [manor_bedroom_day, manor_bedroom_night]
+    initial: manor_bedroom_day
     enter: fade
     start: true
     dialog:
       d001:
         narrator:
-          say: "蝉鸣忽然停了。午后的阳光斜斜地落在讲台边缘，整间教室空得能听见自己的呼吸。"
-          stage: {background: classroom_noon}
-
+          say: "《陌生的天花板》"
+          stage: {background: manor_bedroom_day}
       d002:
-        zhou:
-          sprite: laugh
-          at: {x: 0.76, y: 1.0}
-          animation:
-            - enter: {from: right}
-          say: "喂，值日早就做完了，你还没走啊？"
-          voice: zhou_001
-
+        narrator:
+          say: "说实话，我真的挺后悔在什么没人的地方许一些莫名其妙的愿望的。我开眼的时候，眼前的天花板就让我感到陌生了。毕竟平常在床上看见的天花板通常是白色的，它不会有如此复杂的装饰。"
       d003:
-        lin:
-          sprite: neutral
-          at: {x: 0.24, y: 1.0}
-          animation:
-            - enter: {from: left}
-          say: "……你没走，我怎么走。"
-          voice: lin_001
-
-      # 继承上一行周的 sprite(laugh) 与 at(0.76, 1.0)
+        narrator:
+          say: "无论是床的柔软、被子的触感还是空气中的气味，都让我感到陌生。显然，我以一种我自己都不知道的方式移动到了这个完全陌生的地方，我摸了一圈，身上的东西都还在，只是手机没有了。"
       d004:
-        zhou:
-          say: "这话说得我可太爱听了。\n我还以为你在等雨停呢。"
-          voice: zhou_002
-
-      # 场景内换景（午后 → 黄昏）+ crossfade 转场
+        protagonist:
+          say: "如果只是图财，也不至于做到这种地步吧？"
       d005:
         narrator:
-          say: "说话间，云层压低了天际，夕阳把窗框染成深琥珀色。"
-          stage:
-            background: classroom_dusk
-            transition: crossfade
-
-      # 场景内换景（黄昏 → 落雨）+ 切换 BGM
+          say: "身体和脑袋都十分沉重，感觉像是刚刚从沉重的睡眠中醒来。我也不确定坐起来会不会头晕，所以就在恢复之前，暂且先这样躺着了。"
       d006:
         narrator:
-          say: "第一滴雨敲在玻璃上，紧接着连成一片细密的声响。"
-          stage:
-            background: classroom_dusk_rain
-            bgm: rain_light
-            transition: crossfade
-
+          say: "这房间的装饰看起来十分昂贵，有各种看起来就很高级的深色材料以及我没有见过的各式纹样。目光透过正对着窗的巨大玻璃，只看见几朵从下面伸出的、依靠着阳台生长的花；看起来就十分厚重的墙，阻断了向外延伸的视线。"
       d007:
-        lin:
-          sprite: away
-          say: "……真的下雨了。"
-
-      # 无文本节拍（R8）：隐藏对话框，停顿 0.9 秒自动推进
+        protagonist:
+          say: "如果我再也出不去了呢？如果马上就要死在这里呢？"
       d008:
         narrator:
-          say: ""
-          pause: 0.9
-
+          say: "我并不觉得这样的念头可怕，哪个人心里没产生过一些可怕的想法呢？只要没有付诸行动，我觉得都很正常。"
       d009:
-        lin:
+        narrator:
+          say: "如果真的发生了，我也不觉得是一件坏事。世界抛下我们也可以继续运转，感觉停滞和被抛弃的也从来都只有我们自己而已。"
+      d010:
+        protagonist:
+          say: "如果不用再工作，不用再学习，我只觉得那是件天大的好事……也许就是我许下的这个奇怪的愿望，才让我出现在这里吧？"
+      d011:
+        narrator:
+          say: "既然也没事情做，我就暂且先裹紧被子，睡着了。"
+          stage: {background: manor_bedroom_night, transition: crossfade}
+      d012:
+        narrator:
+          say: "再次醒来时，从窗子外照进的阳光已经消失了，我也不确定过了多久，这屋子里面也没有钟。但我想应该睡了很久吧。"
+      d013:
+        narrator:
+          say: "我抓起放在床边的水一饮而尽，口渴的感觉才缓缓消失。这水是谁准备的呢？我记得之前还没有这个杯子。"
+      d014:
+        narrator:
+          say: "正当我疑惑之时，我听见了一种极其细微的脚步，它是从地板中传来的。脚步声持续了很久，声音也越来越大，带着一种奇异的压迫感。"
+      d015:
+        narrator:
+          say: "直到地板的嘎吱声随着脚步声一同传来，再然后，门就开了。"
+      d016:
+        narrator:
+          say: "屋子里仍旧很暗，没有开灯，但我也能从窗前的黑影中判断进来了一个人。她缓缓绕着房间走了一大圈，然后坐在了床上。"
+      d017:
+        narrator:
+          say: "哪怕只从剪影来看，她的装束也十分奇怪，是一件巨大的裙装。不过除此之外也再看不清什么了，只能从黑暗中感受到一双眼睛，以及它放出的视线。"
+
+  - id: stranger_ceiling.confinement
+    backgrounds: [manor_bedroom_night]
+    initial: manor_bedroom_night
+    enter: fade
+    dialog:
+      d001:
+        narrator:
+          say: "《关于囚禁》"
+      d002:
+        keeper:
+          sprite: unreadable
+          at: {x: 0.72, y: 1.0}
+          animation:
+            - enter: {from: right, style: slow}
+          say: "……"
+      d003:
+        narrator:
+          say: "她仍旧坐在床上，我能感受到她的目光。"
+      d004:
+        protagonist:
+          say: "可以放我走了吗？"
+      d005:
+        keeper:
+          say: "不能。"
+      d006:
+        protagonist:
+          say: "我为什么会在这里？我是怎么过来的，我对此没有记忆。"
+      d007:
+        keeper:
+          say: "这不是你的愿望吗？我只是帮你实现它了而已。"
+      d008:
+        protagonist:
+          say: "那另一个问题呢？"
+      d009:
+        keeper:
+          say: "你不会想知道。"
+      d010:
+        protagonist:
+          say: "这算是囚禁吗？"
+      d011:
+        keeper:
+          say: "你也可以叫它保护，或者囚禁，这取决于你。"
+      d012:
+        protagonist:
+          say: "保护和囚禁，我觉得还是不一样的吧。"
+      d013:
+        keeper:
+          say: "没什么不同，保护是囚禁，囚禁是保护。如何调换顺序都一样，无非是谁是目的，谁是手段而已。"
+      d014:
+        protagonist:
+          say: "……为什么突然说些难懂的话？"
+      d015:
+        keeper:
+          say: "如果你不想听到回答，那一开始就别问啊……"
+      d016:
+        narrator:
+          say: ""
+          pause: 1.0
+      d017:
+        narrator:
+          say: "一阵莫名其妙的沉默。"
+      d018:
+        protagonist:
+          say: "说实话，如果我真的出不去了，我会被关在这个小房间里一辈子吗？"
+      d019:
+        keeper:
+          say: "整座庄园，以后你会知道它有多大的。"
+      d020:
+        protagonist:
+          say: "那既然庄园足够大，那它大到和世界一样大，和放我出去有什么区别呢？"
+      d021:
+        keeper:
+          say: "区别是，这里没有其它人。而且这种想法就和你许的愿望一样奇怪。"
+      d022:
+        protagonist:
+          say: "这种愿望并不奇怪！不劳而获肯定是每个人都有的梦想，虽然人们嘴上都唾弃它。"
+      d023:
+        keeper:
+          say: "因为那种劳动只为了温饱，一旦有机会人们就会迫不及待地逃离它。你很有想法，不过这些想法只能说给我听。"
+      d024:
+        protagonist:
+          say: "我可以说给一棵树或者一块石头听。"
+      d025:
+        keeper:
+          say: "你知道这是谎话，你最后都会忍不住地跟我说的。"
+      d026:
+        protagonist:
+          say: "你确实说对了，但是还有一件事情你没说对。"
+      d027:
+        keeper:
+          say: "我只说了一件事情吧。"
+      d028:
+        protagonist:
+          say: "你说错的事情就是……"
+      d029:
+        keeper:
           sprite: neutral
           animation:
             - nod: {}
-          say: "那就等雨小一点再走吧。"
-          voice: lin_002
-
-      d010:
-        zhou:
-          sprite: surprised
-          animation:
-            - jump: {}
-          say: "喔！难得听你主动留下来。"
-
-      # 角色场内移动（move）+ 停顿节拍
-      d011:
-        zhou:
-          say: ""
-          at: {x: 0.56, y: 1.0}
-          animation:
-            - move: {to: {x: 0.56, y: 1.0}}
-          pause: 0.7
-
-      d012:
-        lin:
-          sprite: away
-          animation:
-            - exit: {to: left, style: slow}
-          say: "我去天台收一下社团的画架，马上回来。"
-          voice: lin_003
-
-  # ─────────────── 场景二：雨中的天台 ───────────────
-  - id: ch01.rooftop
-    backgrounds: [rooftop_night_rain, rooftop_night]
-    initial: rooftop_night_rain
-    bgm: rain_loop
-    enter: crossfade
-    dialog:
-      d001:
-        lin:
-          sprite: away
-          at: {x: 0.5, y: 1.0}
-          animation:
-            - enter: {from: front}
-          say: "雨好像一时半会儿不会停了。"
-
-      d002:
-        narrator:
-          say: "她站在天台的屋檐下没有回头，发梢带着微凉的潮气。"
-
-      # 停止 BGM（bgm: null）
-      d003:
-        narrator:
-          say: "远处的放学广播不知什么时候停了，四周只剩下淅淅沥沥的雨声。"
-          stage: {bgm: null}
-
-      d004:
-        lin:
-          sprite: neutral
-          say: "……刚才在教室里，谢谢你陪我留下来。"
-          voice: lin_004
-
-      d005:
-        lin:
-          sprite: surprised
-          animation:
-            - shake: {}
-          say: "！不是，你别那种表情看着我。"
-
-      d006:
-        lin:
-          sprite: smile
-          stage:
-            background: rooftop_night
-            transition: crossfade
-          say: "……算了。你看，云散开一点了。"
-
-  # ─────────────── 场景三：夜间走廊（分支选择） ───────────────
-  - id: ch01.hallway
-    backgrounds: [hallway_night]
-    initial: hallway_night
-    bgm: hallway_quiet
-    enter: fade
-    dialog:
-      d001:
-        narrator:
-          say: "回到教学楼一楼时，走廊只剩尽头最后一盏灯还亮着。"
-
-      # 新场景清空角色状态（R7），重新进场
-      d002:
-        zhou:
-          sprite: neutral
-          at: {x: 0.68, y: 1.0}
-          animation:
-            - enter: {from: right}
-          say: "伞给你留了一把。这回真要回去了？"
-          voice: zhou_003
-
-      d003:
-        lin:
-          sprite: neutral
-          at: {x: 0.32, y: 1.0}
-          animation:
-            - enter: {from: left}
-          say: "嗯，再晚校门就要锁了。"
-
-      d004:
-        zhou:
-          sprite: serious
-          animation:
-            - shake: {}
-          say: "……其实我本来还有句话想问你，不过还是留到下次吧。"
-
-      d005:
-        zhou:
-          sprite: laugh
-          say: "那，明天见？"
-          voice: zhou_004
-        options:
-          - id: call
-            say: "「等一下——我们一起走吧。」"
-            to: ch01.gate_call
-          - id: quiet
-            say: "「嗯，明天教室见。」（目送他离开）"
-            to: ch01.gate_quiet
-
-  # ─────────────── 结局 A：雨霁同归（展示换景 + CG 演出） ───────────────
-  - id: ch01.gate_call
-    backgrounds: [hallway_night, gate_night]
-    initial: hallway_night
-    bgm: after_school
-    enter: crossfade
-    dialog:
-      d001:
-        zhou:
-          sprite: surprised
-          at: {x: 0.72, y: 1.0}
-          animation:
-            - enter: {from: right}
-            - jump: {}
-          say: "……啊？"
-          voice: zhou_005
-
-      d002:
-        lin:
-          sprite: smile
-          at: {x: 0.28, y: 1.0}
-          animation:
-            - enter: {from: left}
-          say: "反正顺路……而且雨已经停了。"
-          voice: lin_005
-
-      d003:
-        narrator:
-          say: "推开校门的时候，晚风吹散了最后一层薄雾，路灯在水洼里映出暖黄的光。"
-          stage:
-            background: gate_night
-            transition: fade
-
-      d004:
-        narrator:
-          say: "雨后的暮色里，两道影子被路灯拉得很长很长。"
-          stage: {cg: after_rain}
-
-      d005:
-        lin:
-          sprite: smile
-          say: "说好了，明天也要第一个到教室。"
-
-      d006:
-        narrator:
-          say: "【True End · 雨霁同归】"
-          stage: {cg: null}
-    end: true
-
-  # ─────────────── 结局 B：余音独行 ───────────────
-  - id: ch01.gate_quiet
-    backgrounds: [hallway_night, gate_night]
-    initial: hallway_night
-    bgm: null
-    enter: fade
-    dialog:
-      d001:
-        narrator:
-          say: "他挥了挥手，脚步声在空旷的走廊里渐渐远去。"
-          stage: {bgm: null}
-
-      d002:
-        lin:
-          sprite: away
-          at: {x: 0.5, y: 1.0}
-          animation:
-            - enter: {from: front}
-          say: "……有些话，还是留到明天再说吧。"
-
-      d003:
-        narrator:
-          say: "独自走出校门时，夜空已经放晴。\n【Normal End · 余音独行】"
-          stage:
-            background: gate_night
-            transition: crossfade
+          say: "我只是说了一件事情。"
+      d030:
+        protagonist:
+          say: "我饿了。"
+      d031:
+        keeper:
+          say: "那就起身跟我来吧。如果我问你想吃什么，你肯定会说“不知道”，但那不重要，因为这些都是我决定的。"
+      d032:
+        protagonist:
+          say: "那你还告诉我干吗。"
+      d033:
+        keeper:
+          say: "只是为了看起来像你决定的。"
     end: true

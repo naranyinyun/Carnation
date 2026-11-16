@@ -21,7 +21,7 @@ void main() {
       }
     });
 
-    test('executes scenes, character inheritance, branching, rollback, and persists saves across restarts', () async {
+    test('executes scenes, character entry, rollback, and persists saves across restarts', () async {
       final characters = const YamlCharacterCatalogParser()
           .parse(File('characters.yaml').readAsStringSync());
       final source = File('assets/scripts/ch01.yaml').readAsStringSync();
@@ -34,28 +34,22 @@ void main() {
         saveRepository: repo1,
       );
 
-      expect(player1.state.scene.id, 'ch01.classroom');
-      expect(player1.state.activeBackgroundId, 'classroom_noon');
+      expect(player1.state.scene.id, 'stranger_ceiling.awakening');
+      expect(player1.state.activeBackgroundId, 'manor_bedroom_day');
 
-      // Advance to d002 (zhou) and d003 (lin)
-      player1.next();
-      player1.next();
-      expect(player1.state.characters.length, 2);
-
-      // Jump to hallway choice and save to slot 2
-      player1.jumpToScene('ch01.hallway');
-      while (!player1.state.isWaitingForChoice) {
+      // Advance to the night-time encounter, then save to slot 2.
+      player1.jumpToScene('stranger_ceiling.confinement');
+      while (player1.state.lineIndex < 1) {
         player1.next();
       }
       player1.saveSlot(2);
       expect(saveFile.existsSync(), isTrue);
 
-      // Branch to gate_call and test rollback
-      player1.choose('call');
-      expect(player1.state.scene.id, 'ch01.gate_call');
+      // Advance once and test rollback.
+      player1.next();
       player1.stepBack();
-      expect(player1.state.scene.id, 'ch01.hallway');
-      expect(player1.state.isWaitingForChoice, isTrue);
+      expect(player1.state.scene.id, 'stranger_ceiling.confinement');
+      expect(player1.state.lineIndex, 1);
 
       await player1.dispose();
 
@@ -68,11 +62,11 @@ void main() {
       );
 
       expect(player2.saves.containsKey(2), isTrue);
-      expect(player2.saves[2]!.sceneId, 'ch01.hallway');
+      expect(player2.saves[2]!.sceneId, 'stranger_ceiling.confinement');
 
       player2.loadSlot(2);
-      expect(player2.state.scene.id, 'ch01.hallway');
-      expect(player2.state.isWaitingForChoice, isTrue);
+      expect(player2.state.scene.id, 'stranger_ceiling.confinement');
+      expect(player2.state.lineIndex, 1);
 
       await player2.dispose();
     });
@@ -93,22 +87,22 @@ void main() {
   "slots": {
     "1": {
       "slot": 1,
-      "sceneId": "ch01.rooftop",
+      "sceneId": "stranger_ceiling.confinement",
       "sceneIndex": 1,
       "lineIndex": 2,
       "speakerId": "narrator",
       "previewText": "有效存档",
-      "backgroundId": "rooftop_night_rain",
+      "backgroundId": "manor_bedroom_night",
       "savedAt": "2026-11-16T18:00:00.000"
     },
     "2": {
       "slot": 2,
-      "sceneId": "ch01.rooftop",
+      "sceneId": "stranger_ceiling.confinement",
       "sceneIndex": 1,
       "lineIndex": 999,
       "speakerId": "narrator",
       "previewText": "越界行号",
-      "backgroundId": "rooftop_night_rain",
+      "backgroundId": "manor_bedroom_night",
       "savedAt": "2026-11-16T18:00:00.000"
     },
     "3": {
@@ -118,7 +112,7 @@ void main() {
       "lineIndex": 0,
       "speakerId": "narrator",
       "previewText": "不存在的场景",
-      "backgroundId": "classroom_noon",
+      "backgroundId": "manor_bedroom_day",
       "savedAt": "2026-11-16T18:00:00.000"
     }
   }

@@ -1,9 +1,9 @@
 characters:
-  lin:
-    name: 林
-    color: "#7bb0ff"
+  protagonist:
+    name: 我
+    color: "#D6CBB8"
     default_sprite: neutral
-  zhou:
-    name: 周
-    color: "#ffb86c"
+  keeper:
+    name: 她
+    color: "#B99AD5"
     default_sprite: neutral

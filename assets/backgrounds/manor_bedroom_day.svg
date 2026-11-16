@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#37313a"/><stop offset="1" stop-color="#171923"/></linearGradient>
+    <linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e7d7b5" stop-opacity=".8"/><stop offset="1" stop-color="#e7d7b5" stop-opacity="0"/></linearGradient>
+    <pattern id="ornament" width="110" height="110" patternUnits="userSpaceOnUse"><path d="M55 12C37 37 37 73 55 98M12 55C37 37 73 37 98 55" fill="none" stroke="#bca475" stroke-width="3" opacity=".42"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#wall)"/>
+  <rect width="1600" height="900" fill="url(#ornament)"/>
+  <path d="M0 0h1600v165H0z" fill="#221f29"/><path d="M0 165h1600" stroke="#c1a575" stroke-width="12"/>
+  <path d="M90 0v255M1510 0v255" stroke="#a48864" stroke-width="24"/>
+  <rect x="1050" y="155" width="390" height="450" rx="8" fill="#91a8ab" stroke="#d4bd8e" stroke-width="20"/>
+  <rect x="1080" y="185" width="330" height="390" fill="url(#light)"/>
+  <path d="M1140 590q30-160 74 0M1260 590q38-205 95 0" fill="#425943"/><path d="M1172 520q22-38 44 0M1282 480q28-50 56 0" fill="none" stroke="#c8a8bd" stroke-width="18"/>
+  <path d="M0 690h1600v210H0z" fill="#211b20"/>
+  <path d="M95 640q120-150 440-104l204 104v260H95z" fill="#654c50"/><path d="M128 658q140-112 420-72l110 72" fill="none" stroke="#d5c4ae" stroke-width="28"/>
+  <path d="M0 835h1600" stroke="#a48a61" stroke-width="8" opacity=".5"/>
+</svg>
