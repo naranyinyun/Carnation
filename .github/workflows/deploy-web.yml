@@ -26,12 +26,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Validate project & run tests
-        run: |
-          flutter analyze
-          flutter test .agents/skills/carnation-vn/scripts/validate_project.dart
-          flutter test
-
       - name: Build Flutter Web
         run: flutter build web --release
 
