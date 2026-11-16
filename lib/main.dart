@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'assets/asset_catalog_loader.dart';
+import 'assets/asset_models.dart';
 import 'player/novel_player.dart';
 import 'script/script_parser.dart';
+import 'script/script_validator.dart';
 import 'ui/motion.dart';
 import 'ui/player_screen.dart';
 
@@ -39,6 +44,18 @@ class CarnationApp extends StatelessWidget {
   }
 }
 
+class _LoadedBundle {
+  const _LoadedBundle({
+    required this.player,
+    required this.assets,
+    required this.characters,
+  });
+
+  final NovelPlayer player;
+  final AssetCatalog assets;
+  final CharacterCatalog characters;
+}
+
 class _ScriptLoader extends StatefulWidget {
   const _ScriptLoader({required this.initialDebugMode});
 
@@ -49,24 +66,59 @@ class _ScriptLoader extends StatefulWidget {
 }
 
 class _ScriptLoaderState extends State<_ScriptLoader> {
-  late final Future<NovelPlayer> _player = _loadPlayer();
+  late final Future<_LoadedBundle> _bundle = _loadBundle();
 
-  Future<NovelPlayer> _loadPlayer() async {
-    final source = await rootBundle.loadString('assets/scripts/ch01.yaml');
-    final script = YamlScriptParser().parse(source);
-    return ScriptPlayer(script);
+  Future<_LoadedBundle> _loadBundle() async {
+    final assetsRaw = await rootBundle.loadString('assets.yaml');
+    final charactersRaw = await rootBundle.loadString('characters.yaml');
+    final scriptRaw = await rootBundle.loadString('assets/scripts/ch01.yaml');
+
+    final assets = const YamlAssetCatalogParser().parse(assetsRaw);
+    final characters = const YamlCharacterCatalogParser().parse(charactersRaw);
+    final validator = ScriptValidator(
+      assets: assets,
+      characters: characters,
+    );
+
+    final script = YamlScriptParser(validator: validator).parse(scriptRaw);
+    await validator.validateAsync(
+      script,
+      assetExists: (path) async {
+        try {
+          await rootBundle.load(path);
+          return true;
+        } on Object {
+          return false;
+        }
+      },
+    );
+
+    final saveFile = File('${Directory.systemTemp.path}/carnation_saves_v1.json');
+    final saveRepo = JsonFileSaveRepository(saveFile);
+
+    final player = ScriptPlayer(
+      script,
+      characters: characters,
+      saveRepository: saveRepo,
+    );
+
+    return _LoadedBundle(
+      player: player,
+      assets: assets,
+      characters: characters,
+    );
   }
 
   @override
   void dispose() {
-    _player.then((player) => player.dispose());
+    _bundle.then((b) => b.player.dispose());
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<NovelPlayer>(
-      future: _player,
+    return FutureBuilder<_LoadedBundle>(
+      future: _bundle,
       builder: (context, snapshot) {
         final Widget child;
         if (snapshot.hasError) {
@@ -85,9 +137,12 @@ class _ScriptLoaderState extends State<_ScriptLoader> {
             body: Center(child: CircularProgressIndicator()),
           );
         } else {
+          final bundle = snapshot.requireData;
           child = PlayerScreen(
             key: const ValueKey('player'),
-            player: snapshot.requireData,
+            player: bundle.player,
+            assets: bundle.assets,
+            characters: bundle.characters,
             initialDebugMode: widget.initialDebugMode,
           );
         }

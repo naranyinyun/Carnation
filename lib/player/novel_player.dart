@@ -1,98 +1,14 @@
 import 'dart:async';
 
+import '../assets/asset_models.dart';
 import '../script/script_models.dart';
+import 'playback_models.dart';
+import 'save_repository.dart';
+import 'stage_computer.dart';
 
-class StageCharacter {
-  const StageCharacter({
-    required this.characterId,
-    required this.spriteId,
-    required this.position,
-    required this.isSpeaking,
-    this.isExiting = false,
-    this.animations = const [],
-  });
-
-  final String characterId;
-  final String spriteId;
-  final ScreenPosition position;
-  final bool isSpeaking;
-  final bool isExiting;
-  final List<CharacterAnimation> animations;
-}
-
-class BacklogEntry {
-  const BacklogEntry({
-    required this.sceneIndex,
-    required this.lineIndex,
-    required this.sceneId,
-    required this.lineId,
-    required this.speakerId,
-    required this.text,
-    this.voiceId,
-  });
-
-  final int sceneIndex;
-  final int lineIndex;
-  final String sceneId;
-  final String lineId;
-  final String speakerId;
-  final String text;
-  final String? voiceId;
-}
-
-class SaveBookmark {
-  const SaveBookmark({
-    required this.slot,
-    required this.sceneId,
-    required this.sceneIndex,
-    required this.lineIndex,
-    required this.speakerId,
-    required this.previewText,
-    required this.backgroundId,
-    required this.savedAt,
-  });
-
-  final int slot;
-  final String sceneId;
-  final int sceneIndex;
-  final int lineIndex;
-  final String speakerId;
-  final String previewText;
-  final String backgroundId;
-  final DateTime savedAt;
-}
-
-class PlaybackState {
-  const PlaybackState({
-    required this.scene,
-    required this.line,
-    required this.sceneIndex,
-    required this.lineIndex,
-    required this.activeBackgroundId,
-    required this.activeTransition,
-    required this.characters,
-    required this.backlog,
-    this.activeCgId,
-    this.activeBgmId,
-    this.canStepBack = false,
-    this.isEnded = false,
-  });
-
-  final NovelScene scene;
-  final ScriptLine line;
-  final int sceneIndex;
-  final int lineIndex;
-  final String activeBackgroundId;
-  final TransitionKind activeTransition;
-  final String? activeCgId;
-  final String? activeBgmId;
-  final List<StageCharacter> characters;
-  final List<BacklogEntry> backlog;
-  final bool canStepBack;
-  final bool isEnded;
-
-  bool get isWaitingForChoice => line.options.isNotEmpty && !isEnded;
-}
+export 'playback_models.dart';
+export 'save_repository.dart';
+export 'stage_computer.dart';
 
 abstract interface class NovelPlayer {
   NovelScript get script;
@@ -111,15 +27,23 @@ abstract interface class NovelPlayer {
 }
 
 class ScriptPlayer implements NovelPlayer {
-  ScriptPlayer(this._script)
-      : _sceneIndex = _script.scenes.indexWhere((scene) => scene.id == _script.startSceneId),
+  ScriptPlayer(
+    this._script, {
+    CharacterCatalog? characters,
+    SaveRepository? saveRepository,
+  })  : _stageComputer = StageComputer(characters: characters),
+        _saveRepository = saveRepository ?? InMemorySaveRepository(),
+        _sceneIndex = _script.scenes.indexWhere((scene) => scene.id == _script.startSceneId),
         _lineIndex = 0 {
     if (_sceneIndex < 0) throw StateError('Start scene is missing from script');
+    _saves.addAll(_saveRepository.loadAll(script: _script));
     _recordVisit(_sceneIndex, _lineIndex);
-    _state = _snapshot();
+    _state = _computeState();
   }
 
   final NovelScript _script;
+  final StageComputer _stageComputer;
+  final SaveRepository _saveRepository;
   final StreamController<PlaybackState> _states = StreamController.broadcast();
   final List<(int sceneIndex, int lineIndex)> _history = [];
   final Map<int, SaveBookmark> _saves = {};
@@ -151,7 +75,7 @@ class ScriptPlayer implements NovelPlayer {
     }
 
     if (_state.scene.isEnd) {
-      _state = _snapshot(isEnded: true);
+      _state = _computeState(isEnded: true);
       _states.add(_state);
       return;
     }
@@ -215,8 +139,9 @@ class ScriptPlayer implements NovelPlayer {
 
   @override
   void saveSlot(int slot) {
+    if (slot <= 0) throw ArgumentError.value(slot, 'slot', 'Slot must be positive');
     final current = _state;
-    _saves[slot] = SaveBookmark(
+    final bookmark = SaveBookmark(
       slot: slot,
       sceneId: current.scene.id,
       sceneIndex: current.sceneIndex,
@@ -226,6 +151,8 @@ class ScriptPlayer implements NovelPlayer {
       backgroundId: current.activeBackgroundId,
       savedAt: DateTime.now(),
     );
+    _saves[slot] = bookmark;
+    _saveRepository.save(bookmark);
     _states.add(_state);
   }
 
@@ -233,7 +160,21 @@ class ScriptPlayer implements NovelPlayer {
   void loadSlot(int slot) {
     final bookmark = _saves[slot];
     if (bookmark == null) return;
-    jumpTo(bookmark.sceneIndex, bookmark.lineIndex);
+    final targetSceneIndex = _script.scenes.indexWhere((s) => s.id == bookmark.sceneId);
+    if (targetSceneIndex < 0) {
+      _saves.remove(slot);
+      _saveRepository.delete(slot);
+      _states.add(_state);
+      return;
+    }
+    final scene = _script.scenes[targetSceneIndex];
+    if (bookmark.lineIndex < 0 || bookmark.lineIndex >= scene.lines.length) {
+      _saves.remove(slot);
+      _saveRepository.delete(slot);
+      _states.add(_state);
+      return;
+    }
+    jumpTo(targetSceneIndex, bookmark.lineIndex);
   }
 
   void _enterScene(int index) {
@@ -251,106 +192,18 @@ class ScriptPlayer implements NovelPlayer {
     _history.add((sceneIndex, lineIndex));
   }
 
-  PlaybackState _snapshot({bool isEnded = false}) {
-    final scene = _script.scenes[_sceneIndex];
-    final currentLine = scene.lines[_lineIndex];
-
-    var backgroundId = scene.initialBackground;
-    var bgmId = scene.bgm;
-    String? cgId;
-    final stageCharacters = <String, StageCharacter>{};
-
-    for (var i = 0; i <= _lineIndex; i++) {
-      final line = scene.lines[i];
-      if (line.stage.backgroundId != null) {
-        backgroundId = line.stage.backgroundId!;
-      }
-      if (line.stage.hasBgmChange) {
-        bgmId = line.stage.bgmId;
-      }
-      if (line.stage.hasCgChange) {
-        cgId = line.stage.cgId;
-      }
-
-      if (line.speakerId != 'narrator') {
-        final previous = stageCharacters[line.speakerId];
-        final spriteId = line.spriteId ?? previous?.spriteId ?? 'neutral';
-        var position = line.position ?? previous?.position ?? const ScreenPosition(x: 0.5, y: 1.0);
-
-        for (final anim in line.animations) {
-          if (anim.verb == AnimationVerb.move && anim.target != null) {
-            position = anim.target!;
-          }
-        }
-
-        final hasExit = line.animations.any((anim) => anim.verb == AnimationVerb.exit);
-        if (hasExit && i < _lineIndex) {
-          stageCharacters.remove(line.speakerId);
-        } else {
-          stageCharacters[line.speakerId] = StageCharacter(
-            characterId: line.speakerId,
-            spriteId: spriteId,
-            position: position,
-            isSpeaking: i == _lineIndex && !isEnded,
-            isExiting: hasExit && i == _lineIndex,
-            animations: i == _lineIndex ? line.animations : const [],
-          );
-        }
-      }
-
-      if (i == _lineIndex) {
-        for (final entry in stageCharacters.entries.toList()) {
-          if (entry.key != line.speakerId) {
-            stageCharacters[entry.key] = StageCharacter(
-              characterId: entry.value.characterId,
-              spriteId: entry.value.spriteId,
-              position: entry.value.position,
-              isSpeaking: false,
-              isExiting: false,
-              animations: const [],
-            );
-          }
-        }
-      }
-    }
-
-    final transition = _lineIndex == 0 ? scene.enterTransition : currentLine.stage.transition;
-
-    final backlog = <BacklogEntry>[];
-    for (final (sIdx, lIdx) in _history) {
-      final s = _script.scenes[sIdx];
-      final l = s.lines[lIdx];
-      if (l.text.isNotEmpty) {
-        backlog.add(BacklogEntry(
-          sceneIndex: sIdx,
-          lineIndex: lIdx,
-          sceneId: s.id,
-          lineId: l.id,
-          speakerId: l.speakerId,
-          text: l.text,
-          voiceId: l.voiceId,
-        ));
-      }
-    }
-
-    return PlaybackState(
-      scene: scene,
-      line: currentLine,
+  PlaybackState _computeState({bool isEnded = false}) {
+    return _stageComputer.compute(
+      script: _script,
       sceneIndex: _sceneIndex,
       lineIndex: _lineIndex,
-      activeBackgroundId: backgroundId,
-      activeTransition: transition,
-      activeCgId: cgId,
-      activeBgmId: bgmId,
-      characters: List.unmodifiable(stageCharacters.values),
-      backlog: List.unmodifiable(backlog),
-      canStepBack: _history.length > 1 || isEnded,
+      history: _history,
       isEnded: isEnded,
     );
   }
 
   void _publish({bool isEnded = false}) {
-    _state = _snapshot(isEnded: isEnded);
+    _state = _computeState(isEnded: isEnded);
     _states.add(_state);
   }
 
