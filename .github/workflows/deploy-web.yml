@@ -1,0 +1,57 @@
+name: Build and Deploy Flutter Web to Vercel
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Validate project & run tests
+        run: |
+          flutter analyze
+          flutter test .agents/skills/carnation-vn/scripts/validate_project.dart
+          flutter test
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+
+      - name: Upload Web Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-web-build
+          path: build/web
+          retention-days: 7
+
+      - name: Deploy Preview to Vercel (PR)
+        if: github.event_name == 'pull_request'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npx --yes vercel@latest deploy build/web --token=${{ secrets.VERCEL_TOKEN }} --yes
+
+      - name: Deploy Production to Vercel (main)
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npx --yes vercel@latest deploy build/web --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
